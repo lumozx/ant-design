@@ -117,6 +117,7 @@ export interface ModalFuncProps {
   footer?: ModalProps['footer'];
   modalRender?: (node: React.ReactNode) => React.ReactNode;
   focusTriggerAfterClose?: boolean;
+  styles?: Pick<NonNullable<DialogProps['styles']>, 'mask' | 'body'>;
 }
 
 export interface ModalLocale {

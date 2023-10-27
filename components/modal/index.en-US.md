@@ -114,6 +114,7 @@ The items listed above are all functions, expecting a settings object as paramet
 | okText | Text of the OK button | string | `OK` |  |
 | okType | Button `type` of the OK button | string | `primary` |  |
 | style | Style of floating layer, typically used at least for adjusting the position | CSSProperties | - |  |
+| styles | Config Modal build-in module's style | `body?: CSSProperties; mask?: CSSProperties;` | - |  |
 | title | Title | ReactNode | - |  |
 | width | Width of the modal dialog | string \| number | 416 |  |
 | wrapClassName | The class name of the container of the modal dialog | string | - | 4.18.0 |

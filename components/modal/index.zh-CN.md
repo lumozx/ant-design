@@ -115,6 +115,7 @@ demo:
 | okText | 确认按钮文字 | string | `确定` |  |
 | okType | 确认按钮类型 | string | `primary` |  |
 | style | 可用于设置浮层的样式，调整浮层位置等 | CSSProperties | - |  |
+| styles | 配置弹窗内置模块的 style | `body?: CSSProperties; mask?: CSSProperties;` | - |  |
 | title | 标题 | ReactNode | - |  |
 | width | 宽度 | string \| number | 416 |  |
 | wrapClassName | 对话框外层容器的类名 | string | - | 4.18.0 |

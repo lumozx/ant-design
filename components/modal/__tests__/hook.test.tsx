@@ -11,6 +11,7 @@ import ConfigProvider from '../../config-provider';
 import Input from '../../input';
 import zhCN from '../../locale/zh_CN';
 import type { ModalFunc } from '../confirm';
+import { resetWarned } from '../../_util/warning';
 
 jest.mock('rc-util/lib/Portal');
 jest.mock('rc-motion');
@@ -488,5 +489,82 @@ describe('Modal.hook', () => {
     await waitFakeTimer();
 
     expect(lastResult).toBe(false);
+  });
+
+  it('deprecated warning', () => {
+    resetWarned();
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const Demo = () => {
+      const [modal, contextHolder] = Modal.useModal();
+
+      const openBrokenModal = React.useCallback(() => {
+        modal.info({
+          bodyStyle: { backgroundColor: '#fff' },
+          maskStyle: { backgroundColor: '#fff' },
+          visible: true,
+          content: 'Hello!',
+        });
+      }, [modal]);
+
+      return (
+        <div className="App">
+          {contextHolder}
+          <div className="open-hook-modal-btn" onClick={openBrokenModal}>
+            Test hook modal
+          </div>
+        </div>
+      );
+    };
+
+    const { container } = render(<Demo />);
+    fireEvent.click(container.querySelectorAll('.open-hook-modal-btn')[0]);
+    expect(errSpy).toHaveBeenCalledWith(
+      'Warning: [antd: Modal] `visible` is deprecated. Please use `open` instead.',
+    );
+    expect(errSpy).toHaveBeenCalledWith(
+      'Warning: [antd: Modal] `bodyStyle` is deprecated. Please use `styles.body` instead.',
+    );
+    expect(errSpy).toHaveBeenCalledWith(
+      'Warning: [antd: Modal] `maskStyle` is deprecated. Please use `styles.mask` instead.',
+    );
+    errSpy.mockRestore();
+  });
+  it('should styles work', async () => {
+    const Demo = () => {
+      const [modal, contextHolder] = Modal.useModal();
+
+      const openBrokenModal = React.useCallback(() => {
+        modal.info({
+          styles: {
+            mask: {
+              backgroundColor: 'black',
+            },
+            body: {
+              backgroundColor: 'red',
+            },
+          },
+          content: 'Hello!',
+        });
+      }, [modal]);
+
+      return (
+        <div className="App">
+          {contextHolder}
+          <div className="open-hook-modal-btn" onClick={openBrokenModal}>
+            Test hook modal
+          </div>
+        </div>
+      );
+    };
+    const { container } = render(<Demo />);
+    await waitFakeTimer();
+    fireEvent.click(container.querySelectorAll('.open-hook-modal-btn')[0]);
+    await waitFakeTimer();
+    expect(
+      document.body.querySelector<HTMLDivElement>('.ant-modal-mask')?.getAttribute('style'),
+    ).toEqual('background-color: black;');
+    expect(
+      document.body.querySelector<HTMLDivElement>('.ant-modal-body')?.getAttribute('style'),
+    ).toEqual('background-color: red;');
   });
 });
